@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz do Nosso Amor 💕</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Dancing+Script:wght@700&display=swap');
+
+        :root {
+            --pink: #FF69B4;
+            --hot-pink: #FF1493;
+            --light-pink: #FFB6C1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #FF9EC8 0%, #FFB6C1 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            color: #333;
+            padding: 20px 10px;
+        }
+
+        /* Corações flutuantes */
+        .heart {
+            position: absolute;
+            font-size: 30px;
+            color: rgba(255, 105, 180, 0.4);
+            animation: floatHeart 15s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes floatHeart {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0.6; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        .container {
+            max-width: 620px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.95);
+            border-radius: 35px;
+            box-shadow: 0 20px 40px rgba(255, 20, 147, 0.25);
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+        }
+
+        header {
+            background: linear-gradient(to right, #FF1493, #FF69B4);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        header h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.8rem;
+            margin-bottom: 8px;
+            text-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .progress {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: #fff;
+            border-bottom: 3px solid #FF69B4;
+        }
+
+        .progress-circle {
+            width: 52px;
+            height: 52px;
+            background: white;
+            border: 5px solid #FF1493;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #FF1493;
+            box-shadow: 0 5px 15px rgba(255,20,147,0.3);
+        }
+
+        .question-container {
+            padding: 35px 25px;
+            min-height: 380px;
+        }
+
+        .question-box {
+            background: white;
+            border-radius: 30px;
+            padding: 28px 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            border: 4px solid #FF69B4;
+        }
+
+        .question-text {
+            font-size: 1.35rem;
+            font-weight: 600;
+            line-height: 1.4;
+            color: #222;
+            text-align: center;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 50px;
+            padding: 16px 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            font-size: 1.15rem;
+        }
+
+        .option:hover {
+            transform: scale(1.03);
+            box-shadow: 0 12px 30px rgba(255,20,147,0.25);
+        }
+
+        .option .letter {
+            width: 48px;
+            height: 48px;
+            background: #FF1493;
+            color: white;
+            font-weight: 700;
+            font-size: 1.4rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 18px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(255,20,147,0.4);
+        }
+
+        .option.correct {
+            border-color: #00C853;
+            background: #E8F5E9;
+        }
+
+        .option.wrong {
+            border-color: #FF1744;
+            background: #FFEBEE;
+        }
+
+        .feedback {
+            margin: 20px 0;
+            padding: 18px;
+            border-radius: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+        }
+
+        .feedback.success {
+            background: #E8F5E9;
+            color: #00C853;
+            border: 3px solid #00C853;
+        }
+
+        .feedback.error {
+            background: #FFEBEE;
+            color: #FF1744;
+            border: 3px solid #FF1744;
+        }
+
+        .next-btn {
+            display: none;
+            background: linear-gradient(to right, #FF1493, #FF69B4);
+            color: white;
+            border: none;
+            padding: 16px 50px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 20px auto;
+            box-shadow: 0 10px 25px rgba(255,20,147,0.4);
+            transition: all 0.3s;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-4px);
+        }
+
+        .results {
+            padding: 40px 25px;
+            text-align: center;
+            display: none;
+        }
+
+        .score-circle {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .romantic-text {
+            background: white;
+            border-radius: 25px;
+            padding: 35px;
+            margin: 30px auto;
+            max-width: 560px;
+            box-shadow: 0 15px 40px rgba(255,105,180,0.3);
+            font-size: 1.15rem;
+            line-height: 1.85;
+            color: #333;
+            text-align: left;
+        }
+
+        .romantic-text h2 {
+            color: #FF1493;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 2.2rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .restart-btn {
+            background: #FF1493;
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Corações flutuantes -->
+    <div class="heart" style="left: 10%; animation-delay: 0s;">❤️</div>
+    <div class="heart" style="left: 25%; animation-delay: 3s;">💖</div>
+    <div class="heart" style="left: 40%; animation-delay: 7s;">💕</div>
+    <div class="heart" style="left: 60%; animation-delay: 2s;">❤️</div>
+    <div class="heart" style="left: 75%; animation-delay: 5s;">💗</div>
+    <div class="heart" style="left: 85%; animation-delay: 9s;">💓</div>
+
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <h1>Quiz do Nosso Amor</h1>
+            <p>💕 Aleh, quanto você me conhece? 💕</p>
+        </header>
+
+        <!-- PROGRESS -->
+        <div class="progress">
+            <div class="progress-circle" id="progress">1</div>
+            <div style="font-size:1.3rem; font-weight:600; color:#FF1493;">de 10</div>
+        </div>
+
+        <!-- QUIZ -->
+        <div class="question-container" id="quiz-screen">
+            <div class="question-box">
+                <div class="question-text" id="question-text"></div>
+            </div>
+
+            <div class="options" id="options"></div>
+
+            <div class="feedback" id="feedback"></div>
+            <button class="next-btn" id="next-btn" onclick="nextQuestion()">Próxima pergunta 💕</button>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="results" id="results-screen">
+            <div id="score-circle" class="score-circle"></div>
+            <h2 id="result-title"></h2>
+            <div id="romantic-content"></div>
+            <button class="restart-btn" onclick="restartQuiz()">Refazer o Quiz 💕</button>
+        </div>
+
+        <footer>
+            Feito com muito ❤️ para minha Aleh
+        </footer>
+    </div>
+
+    <script>
+        // ====================== PERGUNTAS ======================
+        const questions = [
+            {
+                question: "Qual o meu super-herói favorito?",
+                options: ["A) Flash", "B) Homem aranha", "C) Super Man", "D) Mercúrio"],
+                correct: "B"
+            },
+            {
+                question: "Qual a minha data de aniversário?",
+                options: ["A) 11 de janeiro", "B) 15 de janeiro", "C) 22 de janeiro", "D) 27 de janeiro"],
+                correct: "A"
+            },
+            {
+                question: "Qual é o meu time do coração?",
+                options: ["A) Palmeiras", "B) Flamengo", "C) Corinthians", "D) São Paulo"],
+                correct: "B"
+            },
+            {
+                question: "Qual jogador eu mais defendo mesmo quando joga mal?",
+                options: ["A) Gabigol", "B) Vini jr", "C) Ayrton Lukas", "D) Rossi"],
+                correct: "D"
+            },
+            {
+                question: "Qual é minha comida favorita?",
+                options: ["A) Pizza", "B) Hambúrguer", "C) Não tenho comida favorita", "D) Churrasco"],
+                correct: "C"
+            },
+            {
+                question: "Qual é meu passatempo favorito?",
+                options: ["A) Jogar videogame", "B) Jogar Futebol", "C) Dormir", "D) Ficar no celular"],
+                correct: "B"
+            },
+            {
+                question: "Qual estilo de música eu mais escuto?",
+                options: ["A) Funk", "B) Rap", "C) Gospel", "D) Sertanejo"],
+                correct: "B"
+            },
+            {
+                question: "Qual é uma coisa que eu SEMPRE faço?",
+                options: ["A) Reclamo do VAR", "B) Piada em momento sério", "C) Provoco rival", "D) Todas as Respostas Anteriores estão Corretas"],
+                correct: "D"
+            },
+            {
+                question: "O que mais me deixa feliz no dia-a-dia?",
+                options: ["A) Ir para a escola", "B) Assistir", "C) Conversar com a Aleh", "D) Jogar Bola"],
+                correct: "C"
+            },
+            {
+                question: "Qual meu maior sonho atualmente?",
+                options: ["A) Conhecer a Aleh Pessoalmente", "B) Ver o Flamengo Penta da Liberta", "C) Terminar a Escola Logo", "D) Lula Morrer de causas Naturais"],
+                correct: "A"
+            }
+        ];
+
+        // Texto romântico grande (muitos versos)
+        const fullRomanticText = `
+            <h2>💖 ALEH, VOCÊ DESBLOQUEOU MEU CORAÇÃO INTEIRO! 💖</h2>
+            <p>Aleh, meu amor eterno. 
+Desde o primeiro dia que conversamos, meu mundo ganhou cor, cada mensagem sua faz meu coração bater mais forte, cada risada sua ecoa na minha alma.
+Você é o que mais me deixa feliz no dia a dia. Conversar com você é meu momento favorito do mundo inteiro.
+Eu te amo mais que o Flamengo ama uma Libertadores, mais que amo jogar bola, mais que qualquer coisa que existe.
+Meu maior sonho é te conhecer pessoalmente, te abraçar bem forte, olhar nos seus olhos e dizer olhando pra você: eu te amo tanto!
+Você me faz sorrir nos dias ruins, me dá forças quando eu preciso, e me faz sonhar com um futuro lindo ao seu lado.
+Quero viver todos os meus melhores momentos com você. Quero te fazer a mulher mais feliz do planeta.
+Você é perfeita pra mim. Seu jeito, sua voz, sua personalidade, tudo em você é exatamente o que eu sempre quis.
+eu te amo hoje, amanhã, depois de amanhã e por toda a eternidade.
+Obrigado por existir e por ser minha namorada. Você é o meu maior presente.
+Você não é só minha namorada Aleh, você é meu lar, minha paz, minha maior aventura, com você eu me sinto o homem mais completo do mundo.
+Eu te amo tanto que nem cabe no peito, eu te amo tanto que já planejo nosso futuro inteiro na minha cabeça todos os dias.
+Você é meu agora, meu sempre e minha eternidade inteira.
+eu te amo, minha vida. Pra sempre🖤💜<p>
+            <p style="text-align:center; margin-top:25px; font-size:1.4rem;">Com todo meu amor,<br><strong>Seu namorado que te ama infinitamente ❤️</strong></p>
+        `;
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedAnswer = null;
+
+        const progressEl = document.getElementById('progress');
+        const questionTextEl = document.getElementById('question-text');
+        const optionsEl = document.getElementById('options');
+        const feedbackEl = document.getElementById('feedback');
+        const nextBtn = document.getElementById('next-btn');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        const scoreCircle = document.getElementById('score-circle');
+        const resultTitle = document.getElementById('result-title');
+        const romanticContent = document.getElementById('romantic-content');
+
+        function playSound(isCorrect) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            if (isCorrect) {
+                oscillator.frequency.setValueAtTime(880, audioContext.currentTime);
+                gainNode.gain.value = 0.3;
+                oscillator.type = 'sine';
+                gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.6);
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.6);
+            } else {
+                oscillator.frequency.setValueAtTime(280, audioContext.currentTime);
+                gainNode.gain.value = 0.4;
+                oscillator.type = 'sawtooth';
+                gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.8);
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.8);
+            }
+        }
+
+        function loadQuestion() {
+            const q = questions[currentQuestionIndex];
+            progressEl.textContent = currentQuestionIndex + 1;
+            questionTextEl.textContent = q.question;
+            optionsEl.innerHTML = '';
+
+            q.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.innerHTML = `
+                    <div class="letter">${String.fromCharCode(65 + index)}</div>
+                    <div>${option}</div>
+                `;
+                optionDiv.onclick = () => selectAnswer(optionDiv, option.charAt(0));
+                optionsEl.appendChild(optionDiv);
+            });
+
+            feedbackEl.style.display = 'none';
+            nextBtn.style.display = 'none';
+        }
+
+        function selectAnswer(optionElement, chosenLetter) {
+            if (selectedAnswer !== null) return; // já respondeu
+            selectedAnswer = chosenLetter;
+
+            const isCorrect = chosenLetter === questions[currentQuestionIndex].correct;
+
+            // Marcar todas as opções
+            const allOptions = optionsEl.children;
+            for (let opt of allOptions) {
+                const letter = opt.querySelector('.letter').textContent;
+                if (letter === questions[currentQuestionIndex].correct) {
+                    opt.classList.add('correct');
+                }
+                if (letter === chosenLetter && !isCorrect) {
+                    opt.classList.add('wrong');
+                }
+                opt.style.pointerEvents = 'none';
+            }
+
+            if (isCorrect) {
+                score++;
+                feedbackEl.textContent = "ACERTOU! ❤️";
+                feedbackEl.className = "feedback success";
+                playSound(true);
+            } else {
+                feedbackEl.textContent = "ERROU 😢";
+                feedbackEl.className = "feedback error";
+                playSound(false);
+            }
+
+            feedbackEl.style.display = 'block';
+            nextBtn.style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            selectedAnswer = null;
+
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizScreen.style.display = 'none';
+            resultsScreen.style.display = 'block';
+
+            const percentage = Math.round((score / questions.length) * 100);
+            scoreCircle.style.background = score >= 6 
+                ? 'linear-gradient(135deg, #00C853, #64DD17)' 
+                : 'linear-gradient(135deg, #FF1744, #FF5722)';
+            scoreCircle.innerHTML = `
+                <span>${score}</span>
+                <span style="font-size:1rem; margin-top:-10px;">/10</span>
+            `;
+
+            if (score >= 6) {
+                resultTitle.innerHTML = `PARABÉNS ALEH! 💖<br>Você desbloqueou meu coração!`;
+                romanticContent.innerHTML = fullRomanticText;
+            } else {
+                resultTitle.innerHTML = `Quase lá, meu amor... 💕<br>Você acertou <strong>${score}</strong>/10`;
+                romanticContent.innerHTML = `
+                    <div style="background:#FFF0F5; padding:25px; border-radius:20px; font-size:1.25rem; line-height:1.7;">
+                        <p>Aleh, mesmo que não tenha acertado, saiba que eu te amo do mesmo jeito!</p>
+                        <p>Você é a pessoa mais especial da minha vida. Tente de novo e desbloqueie o texto completo do meu amor por você ❤️</p>
+                        <p style="margin-top:20px;">Eu te amo infinitamente!</p>
+                    </div>
+                `;
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            selectedAnswer = null;
+            quizScreen.style.display = 'block';
+            resultsScreen.style.display = 'none';
+            loadQuestion();
+        }
+
+        // Inicia o quiz
+        window.onload = () => {
+            loadQuestion();
+        };
+    </script>
+</body>
+</html>
+
+
+
+
